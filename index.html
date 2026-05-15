@@ -339,6 +339,8 @@
 <script>
 const fmt = v => '$' + v.toLocaleString('es-MX', {maximumFractionDigits:0});
 const fmtK = v => v >= 1000000 ? '$' + (v/1000000).toFixed(1) + 'M' : '$' + Math.round(v/1000) + 'K';
+// Decodificar HTML entities (necesario porque el archivo se sirve con entities por compatibilidad UTF-8)
+const decodeHTML = s => { const t = document.createElement('textarea'); t.innerHTML = s; return t.value; };
 
 const TOTAL_PAGADO = 2259609;
 
@@ -392,7 +394,7 @@ const active = categories.filter(c => c.paid > 0).sort((a,b) => b.paid - a.paid)
 new Chart(document.getElementById('chartBudget'), {
   type: 'bar',
   data: {
-    labels: active.map(c => c.name),
+    labels: active.map(c => decodeHTML(c.name)),
     datasets: [
       {label: 'Pagado', data: active.map(c => c.paid), backgroundColor: active.map(c => c.color), borderRadius: 4},
     ]
@@ -441,7 +443,7 @@ new Chart(document.getElementById('chartWeekly'), {
 new Chart(document.getElementById('chartPie'), {
   type: 'doughnut',
   data: {
-    labels: ['Material', 'Mano de obra', 'Honorarios', 'Pre-const.', 'Electricidad', 'Fontaner&#237;a'],
+    labels: ['Material', 'Mano de obra', 'Honorarios', 'Pre-const.', 'Electricidad', 'Fontaner&#237;a'].map(decodeHTML),
     datasets: [{
       data: [957321, 775681, 204837, 125690, 106080, 90000],
       backgroundColor: ['#DC2626', '#2563EB', '#7C3AED', '#D97706', '#F59E0B', '#1D4ED8'],
